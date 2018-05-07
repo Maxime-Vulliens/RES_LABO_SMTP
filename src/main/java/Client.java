@@ -12,7 +12,7 @@ public class Client {
     private int port;
 
     private String debug;
-    private DataInputStream is;
+    private BufferedReader is;
     private DataOutputStream os;
 
     public Client(int port) {
@@ -27,11 +27,19 @@ public class Client {
             socket = new Socket("127.0.0.1",port);
 
             os = new DataOutputStream(socket.getOutputStream());
-            is = new DataInputStream(socket.getInputStream());
+            is = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
 
-            System.out.println("Send helo");
+            is.readLine();
+
             os.writeBytes("EHLO mockmock\r\n");
             os.flush();
+
+            String tmp;
+            do {
+                tmp = is.readLine();
+            }while (!tmp.startsWith("250 "));
+
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -58,8 +66,6 @@ public class Client {
                     msg.getMessage() + "\r\n.\r\n");
             os.flush();
 
-            debug = getStringFromInputStream(is);
-            System.out.println("debug : " + debug);
 
         }catch (IOException e){
             e.printStackTrace();
@@ -70,8 +76,10 @@ public class Client {
     // disconnecct the server
     public void diconnect(){
 
-        System.out.println("close connection");
+
         try {
+            os.writeBytes("QUIT\r\n");
+            os.flush();
             socket.close();
 
         } catch (IOException e) {
@@ -79,19 +87,4 @@ public class Client {
         }
     }
 
-    // Read a string from input stream
-    protected String getStringFromInputStream(InputStream is){
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder out = new StringBuilder();
-        String line;
-        try {
-            if ((line = reader.readLine()) != null) {
-                out.append(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return out.toString();
-    }
 }

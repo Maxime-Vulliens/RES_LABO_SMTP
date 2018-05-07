@@ -30,7 +30,7 @@ public class Main {
         do {
             System.out.println("Combien de personne par groupe ?");
             nbPers = reader.nextInt(); // Scans the next token of the input as an int.
-        } while(nbPers <= 3);
+        } while(nbPers < 3);
 
 
         for (int i = 0; i < nbGroups; i++){

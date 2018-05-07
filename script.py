@@ -1,4 +1,5 @@
-
+# Author : Maxime Vulliens
+# Function : script use to generate dummy data.
 import random
 
 
